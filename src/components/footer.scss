@@ -1,0 +1,29 @@
+.footer {
+  background: black;
+  color: white;
+  display: grid;
+  font-family: monospace;
+  grid-template-columns: repeat(3, 1fr);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  &__center {
+    text-align: center;
+  }
+
+  &__build {
+    display: flex;
+    flex-direction: column;
+    font-size: 8px;
+    gap: 8px;
+    margin: 0;
+    padding: 10px;
+    text-align: end;
+
+     >p {
+        margin: 0;
+     }
+  }
+}

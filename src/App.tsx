@@ -1,35 +1,18 @@
-import {useState} from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import HomePage from "./pages/HomePage.tsx";
+import LayoutWrapper from "./wrappers/LayoutWrapper.tsx";
+import {useAtomValue} from "jotai/react";
+import {tokenAtom} from "./atomStore.ts";
+import {isJwtValid} from "./utils/isJwtValid.ts";
+import youShallNotPass from "./assets/you-shall-not-pass.gif";
 
 function App() {
-    const [count, setCount] = useState(0)
+    const token = useAtomValue(tokenAtom);
+    const tokenValid = isJwtValid(token);
 
     return (
-        <>
-            <div>
-                <a href="https://vite.dev" target="_blank">
-                    <img src={viteLogo} className="logo" alt="Vite logo"/>
-                </a>
-                <a href="https://react.dev" target="_blank">
-                    <img src={reactLogo} className="logo react" alt="React logo"/>
-                </a>
-            </div>
-            <h1>fin.tilcer.cz</h1>
-            <h2>H2</h2>
-            <div className="card">
-                <button onClick={() => setCount((count) => count + 1)}>
-                    count is {count}
-                </button>
-                <p>
-                    Edit <code>src/App.tsx</code> and save to test HMR
-                </p>
-            </div>
-            <p className="read-the-docs">
-                Click on the Vite and React logos to learn more
-            </p>
-        </>
+        <LayoutWrapper>
+            {tokenValid ? <HomePage/> : <img src={youShallNotPass} alt={""}/> }
+        </LayoutWrapper>
     )
 }
 

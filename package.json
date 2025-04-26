@@ -1,7 +1,7 @@
 {
   "name": "fin.tilcer.cz",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,11 +10,19 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.74.4",
+    "antd": "^5.24.8",
+    "dayjs": "^1.11.13",
+    "fs": "^0.0.1-security",
+    "jotai": "^2.12.3",
+    "path": "^0.12.7",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "sass": "^1.87.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.15.0",
+    "@types/node": "^22.15.2",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.4",
@@ -24,6 +32,6 @@
     "globals": "^15.12.0",
     "typescript": "~5.6.2",
     "typescript-eslint": "^8.15.0",
-    "vite": "^6.0.1"
+    "vite": "6.2.6"
   }
 }
