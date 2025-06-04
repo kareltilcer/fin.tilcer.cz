@@ -1,4 +1,7 @@
 import {BudgetMonthData} from "../model/dto/month.dto.ts";
+import {Card, Col, Row, Typography} from 'antd';
+
+const {Title, Text} = Typography;
 
 interface Props {
     budget: BudgetMonthData;
@@ -16,31 +19,49 @@ const BudgetFlow= ({ budget }: Props) => {
     const savings2Amount = totalIncome * savings2Portion;
 
     return (
-        <div style={{display: 'flex', justifyContent: 'space-between', padding: '20px', gap: '20px'}}>
+        <Row gutter={20} style={{padding: '20px'}}>
             {/* Column 1: Incomes */}
-            <div style={{textAlign: "right"}}>
-                <h3 className="font-bold text-lg">Incomes</h3>
-                <div>Kája: CZK{budget.incomeKaja.toFixed(2)}</div>
-                <div>Andy: CZK{budget.incomeAndy.toFixed(2)}</div>
-                <div style={{color: "gray"}}>Total: CZK{totalIncome.toFixed(2)}</div>
-            </div>
+            <Col span={8}>
+                <Card style={{border: 'none', textAlign: "right"}}>
+                    <Title level={5} style={{marginTop: 0}}>Incomes</Title>
+                    <div style={{textAlign: "right"}}>
+                        <Text style={{display: 'block'}}>Kája: CZK {Math.floor(budget.incomeKaja)}</Text>
+                        <Text style={{display: 'block'}}>Andy: CZK {Math.floor(budget.incomeAndy)}</Text>
+                        <Text type="secondary" style={{display: 'block'}}>Total: CZK {Math.floor(totalIncome)}</Text>
+                    </div>
+                </Card>
+            </Col>
 
             {/* Column 2: Joined Account */}
-            <div style={{textAlign: "right"}}>
-                <h3 className="font-bold text-lg">Joined Account</h3>
-                <div>Kája: CZK{(budget.incomeKaja * joinedAccountPortion).toFixed(2)}</div>
-                <div>Andy: CZK{(budget.incomeAndy * joinedAccountPortion).toFixed(2)}</div>
-                <div style={{color: "gray"}}>Total: CZK{totalIncome.toFixed(2)}</div>
-            </div>
+            <Col span={8}>
+                <Card style={{border: 'none'}}>
+                    <Title level={5} style={{marginTop: 0, textAlign: "right"}}>Převod na Kandy</Title>
+                    <div style={{textAlign: "right"}}>
+                        <Text style={{display: 'block'}}>Kája: CZK {Math.floor((budget.incomeKaja * joinedAccountPortion))}</Text>
+                        <Text style={{display: 'block'}}>Andy: CZK {Math.floor((budget.incomeAndy * joinedAccountPortion))}</Text>
+                        <Text type="secondary" style={{display: 'block'}}>Total: CZK {Math.floor(totalIncome)}</Text>
+                    </div>
+                </Card>
+            </Col>
 
             {/* Column 3: Savings */}
-            <div style={{textAlign: "right"}}>
-                <h3 className="font-bold text-lg">Savings</h3>
-                <div>Savings fun ({(savings1Portion * 100).toFixed(0)}%): ${savings1Amount.toFixed(2)}</div>
-                <div>Savings no-fun ({(savings2Portion * 100).toFixed(0)}%): ${savings2Amount.toFixed(2)}</div>
-                <div style={{color: "gray"}}>Total Saved: ${(savings1Amount + savings2Amount).toFixed(2)}</div>
-            </div>
-        </div>
+            <Col span={8}>
+                <Card style={{border: 'none'}}>
+                    <Title level={5} style={{marginTop: 0, textAlign: "right"}}>{"Kandy -> Spořák"}</Title>
+                    <div style={{textAlign: "right"}}>
+                        <Text style={{display: 'block'}}>
+                            Savings fun ({(savings1Portion * 100)}%): CZK {Math.floor(savings1Amount)}
+                        </Text>
+                        <Text style={{display: 'block'}}>
+                            Savings no-fun ({(savings2Portion * 100)}%): CZK {Math.floor(savings2Amount)}
+                        </Text>
+                        <Text type="secondary" style={{display: 'block'}}>
+                            Total Saved: CZK {Math.floor((savings1Amount + savings2Amount))}
+                        </Text>
+                    </div>
+                </Card>
+            </Col>
+        </Row>
     );
 };
 

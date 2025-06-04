@@ -1,7 +1,9 @@
 import {ReactNode} from "react";
 import Header from "../components/Header.tsx";
 import Footer from "../components/Footer.tsx";
-import "./layoutWrapper.scss"
+import {Layout} from 'antd';
+
+const {Content} = Layout;
 
 type Props = {
     children: ReactNode;
@@ -9,13 +11,19 @@ type Props = {
 
 const LayoutWrapper = ({children}: Props) => {
     return (
-        <div className={"layoutWrapper"}>
+        <Layout style={{minHeight: '100vh'}}>
             <Header/>
-            <main className={"layoutWrapper__content"}>
+            <Content style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '10px',
+                padding: '16px 16px 60px 16px',
+                flex: 1
+            }}>
                 {children}
-            </main>
+            </Content>
             <Footer/>
-        </div>
+        </Layout>
     );
 }
 

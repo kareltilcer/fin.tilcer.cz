@@ -1,12 +1,13 @@
-import "./header.scss"
 import {useAtom} from "jotai/react";
 import {tokenAtom} from "../atomStore.ts";
 import {isJwtValid} from "../utils/isJwtValid.ts";
 import {fetchMe} from "../api/me.ts";
 import Login from "./Login.tsx";
 import {useQuery, useQueryClient} from "@tanstack/react-query";
-import {Avatar, Button, Popover} from "antd";
+import {Avatar, Button, Layout, Popover} from "antd";
 import {RESET} from 'jotai/utils'
+
+const {Header: AntHeader} = Layout;
 
 const Header = () => {
     const [token, setToken] = useAtom(tokenAtom);
@@ -26,11 +27,20 @@ const Header = () => {
     }
 
     return (
-        <header className={"header"}>
-            <nav className={"header__nav"}>
-                {/*<NavLink className={"header__navLink"} to={"/"}>Meal Plan</NavLink>*/}
-                {/*<NavLink className={"header__navLink"} to={"/cook-book"}>Cook Book</NavLink>*/}
-                {/*{tokenValid && <NavLink className={"header__navLink"} to={"/shopping-list"}>Shopping list</NavLink>}*/}
+        <AntHeader style={{
+            background: '#000000',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: '10px 20px',
+            position: 'sticky',
+            top: 0,
+            zIndex: 1000
+        }}>
+            <nav style={{display: 'flex', gap: '20px', alignItems: 'center'}}>
+                {/*<NavLink style={{color: '#000', fontSize: '24px', textDecoration: 'none', padding: '20px'}} to={"/"}>Meal Plan</NavLink>*/}
+                {/*<NavLink style={{color: '#000', fontSize: '24px', textDecoration: 'none', padding: '20px'}} to={"/cook-book"}>Cook Book</NavLink>*/}
+                {/*{tokenValid && <NavLink style={{color: '#000', fontSize: '24px', textDecoration: 'none', padding: '20px'}} to={"/shopping-list"}>Shopping list</NavLink>}*/}
             </nav>
             <div>
                 {tokenValid
@@ -48,7 +58,7 @@ const Header = () => {
                     : <Login/>
                 }
             </div>
-        </header>
+        </AntHeader>
     );
 }
 

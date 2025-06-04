@@ -1,7 +1,6 @@
-import {Button, Col, Collapse, DatePicker, Form, FormProps, InputNumber, message, Row, Typography} from "antd";
+import {Button, Card, Col, Collapse, DatePicker, Form, FormProps, InputNumber, message, Row, Typography} from "antd";
 import {useEffect, useState} from "react";
 import dayjs, {Dayjs} from 'dayjs';
-import "./homePage.scss"
 import {useQuery} from "@tanstack/react-query";
 import {fetchMonths, postMonthSplit} from "../api/months.ts";
 import {useAtomValue} from "jotai/react";
@@ -105,7 +104,7 @@ const HomePage = () => {
     }
 
     return (
-        <div className={"homepage"}>
+        <Card style={{background: 'transparent', border: 'none', color: '#FFFFFF'}}>
             {contextHolder}
             <Form form={form} layout="vertical" onFinish={handleSubmit} initialValues={{}}>
                 <Title level={3}>Budget Split</Title>
@@ -159,115 +158,126 @@ const HomePage = () => {
                 </Row>
 
                 {/* Needs Row */}
-                <Row gutter={16} style={{paddingTop: 16, paddingBottom: 16, borderTop: '1px solid #ccc'}}>
-                    <Col span={8} style={{marginTop: 4}}><b>Needs</b></Col>
-                    <Col span={16}>
-                        <Form.Item name="needs">
+                <Card style={{marginTop: 16, background: 'rgba(255, 255, 255, 0.05)', border: 'none'}}>
+                    <Row gutter={16}>
+                        <Col span={8} style={{marginTop: 4}}><b>Needs</b></Col>
+                        <Col span={16}>
+                            <Form.Item name="needs">
+                                <InputNumber
+                                    style={{width: '100%'}}
+                                    readOnly={true}
+                                />
+                            </Form.Item>
+                        </Col>
+                        <Col span={24} style={{textAlign: 'right', marginTop: '-22px'}}>
+                            <span>Split %:</span>
                             <InputNumber
-                                style={{width: '100%'}}
-                                readOnly={true}
+                                min={0}
+                                max={100}
+                                value={splits.needs}
+                                onChange={value => handleSplitChange('needs', value as number)}
+                                style={{width: '100px', marginLeft: 8}}
                             />
-                        </Form.Item>
-                    </Col>
-                    <Col span={24} style={{textAlign: 'right', marginTop: '-22px'}}>
-                        <span>Split %:</span>
-                        <InputNumber
-                            min={0}
-                            max={100}
-                            value={splits.needs}
-                            onChange={value => handleSplitChange('needs', value as number)}
-                            style={{width: '100px', marginLeft: 8}}
-                        />
-                    </Col>
-                </Row>
+                        </Col>
+                    </Row>
+                </Card>
 
                 {/* Wants Row */}
-                <Row gutter={16} style={{paddingTop: 16, paddingBottom: 16, borderTop: '1px solid #eee'}}>
-                    <Col span={8} style={{marginTop: 4}}><b>Wants</b></Col>
-                    <Col span={8}>
-                        <Form.Item name="wantsKaja">
+                <Card style={{marginTop: 16, background: 'rgba(255, 255, 255, 0.05)', border: 'none'}}>
+                    <Row gutter={16}>
+                        <Col span={8} style={{marginTop: 4}}><b>Wants</b></Col>
+                        <Col span={8}>
+                            <Form.Item name="wantsKaja">
+                                <InputNumber
+                                    style={{width: '100%'}}
+                                    readOnly
+                                />
+                            </Form.Item>
+                        </Col>
+                        <Col span={8}>
+                            <Form.Item name="wantsAndy">
+                                <InputNumber
+                                    style={{width: '100%'}}
+                                    readOnly
+                                />
+                            </Form.Item>
+                        </Col>
+                        <Col span={24} style={{textAlign: 'right', marginTop: '-22px'}}>
+                            <span>Split %:</span>
                             <InputNumber
-                                style={{width: '100%'}}
-                                readOnly
+                                min={0}
+                                max={100}
+                                value={splits.wants}
+                                onChange={value => handleSplitChange('wants', value as number)}
+                                style={{width: '100px', marginLeft: 8}}
                             />
-                        </Form.Item>
-                    </Col>
-                    <Col span={8}>
-                        <Form.Item name="wantsAndy">
-                            <InputNumber
-                                style={{width: '100%'}}
-                                readOnly
-                            />
-                        </Form.Item>
-                    </Col>
-                    <Col span={24} style={{textAlign: 'right', marginTop: '-22px'}}>
-                        <span>Split %:</span>
-                        <InputNumber
-                            min={0}
-                            max={100}
-                            value={splits.wants}
-                            onChange={value => handleSplitChange('wants', value as number)}
-                            style={{width: '100px', marginLeft: 8}}
-                        />
-                    </Col>
-                </Row>
+                        </Col>
+                    </Row>
+                </Card>
 
                 {/* Fun Savings Row */}
-                <Row gutter={16} style={{paddingTop: 16, paddingBottom: 16, borderTop: '1px solid #eee'}}>
-                    <Col span={8} style={{marginTop: 4}}><b>Fun savings</b></Col>
-                    <Col span={16}>
-                        <Form.Item name="funSavings">
+                <Card style={{marginTop: 16, background: 'rgba(255, 255, 255, 0.05)', border: 'none'}}>
+                    <Row gutter={16}>
+                        <Col span={8} style={{marginTop: 4}}><b>Fun savings</b></Col>
+                        <Col span={16}>
+                            <Form.Item name="funSavings">
+                                <InputNumber
+                                    style={{width: '100%'}}
+                                    readOnly
+                                />
+                            </Form.Item>
+                        </Col>
+                        <Col span={24} style={{textAlign: 'right', marginTop: '-22px'}}>
+                            <span>Split %:</span>
                             <InputNumber
-                                style={{width: '100%'}}
-                                readOnly
+                                min={0}
+                                max={100}
+                                value={splits.funSavings}
+                                onChange={value => handleSplitChange('funSavings', value as number)}
+                                style={{width: '100px', marginLeft: 8}}
                             />
-                        </Form.Item>
-                    </Col>
-                    <Col span={24} style={{textAlign: 'right', marginTop: '-22px'}}>
-                        <span>Split %:</span>
-                        <InputNumber
-                            min={0}
-                            max={100}
-                            value={splits.funSavings}
-                            onChange={value => handleSplitChange('funSavings', value as number)}
-                            style={{width: '100px', marginLeft: 8}}
-                        />
-                    </Col>
-                </Row>
+                        </Col>
+                    </Row>
+                </Card>
 
                 {/* No Fun Savings Row */}
-                <Row gutter={16} style={{paddingTop: 16, paddingBottom: 16, borderTop: '1px solid #eee'}}>
-                    <Col span={8} style={{marginTop: 4}}><b>No fun savings</b></Col>
-                    <Col span={16}>
-                        <Form.Item name="noFunSavings">
+                <Card style={{marginTop: 16, background: 'rgba(255, 255, 255, 0.05)', border: 'none'}}>
+                    <Row gutter={16}>
+                        <Col span={8} style={{marginTop: 4}}><b>No fun savings</b></Col>
+                        <Col span={16}>
+                            <Form.Item name="noFunSavings">
+                                <InputNumber
+                                    style={{width: '100%'}}
+                                    readOnly
+                                />
+                            </Form.Item>
+                        </Col>
+                        <Col span={24} style={{textAlign: 'right', marginTop: '-22px'}}>
+                            <span>Split %:</span>
                             <InputNumber
-                                style={{width: '100%'}}
-                                readOnly
+                                min={0}
+                                max={100}
+                                value={splits.noFunSavings}
+                                onChange={value => handleSplitChange('noFunSavings', value as number)}
+                                style={{width: '100px', marginLeft: 8}}
                             />
-                        </Form.Item>
-                    </Col>
-                    <Col span={24} style={{textAlign: 'right', marginTop: '-22px'}}>
-                        <span>Split %:</span>
-                        <InputNumber
-                            min={0}
-                            max={100}
-                            value={splits.noFunSavings}
-                            onChange={value => handleSplitChange('noFunSavings', value as number)}
-                            style={{width: '100px', marginLeft: 8}}
-                        />
-                    </Col>
-                </Row>
+                        </Col>
+                    </Row>
+                </Card>
 
                 {/* Submit button */}
-                <Col span={24} style={{textAlign: 'right', marginTop: 16}}>
-                    <Form.Item>
-                        <Button type="primary" htmlType="submit">
-                            Submit
-                        </Button>
-                    </Form.Item>
-                </Col>
+                <Row justify="end" style={{marginTop: 16}}>
+                    <Col>
+                        <Form.Item>
+                            <Button type="primary" htmlType="submit">
+                                Submit
+                            </Button>
+                        </Form.Item>
+                    </Col>
+                </Row>
             </Form>
-            <div className="budget-flow-container">
+
+            <Card style={{marginTop: 24, background: 'transparent', border: 'none'}}>
                 <Title level={4}>Budget Flow</Title>
                 <Collapse defaultActiveKey={data?.[0]?.id}>
                     {data?.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
@@ -277,8 +287,8 @@ const HomePage = () => {
                         </Collapse.Panel>
                     ))}
                 </Collapse>
-            </div>
-        </div>
+            </Card>
+        </Card>
     );
 }
 
