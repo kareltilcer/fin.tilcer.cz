@@ -1,8 +1,16 @@
 .homepage {
   color: #FFFFFF;
+  padding-bottom: 50px;
 }
 .homepage input {
   color: #000000 !important;
+}
+
+.budget-flow-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
 }
 
 /*# sourceMappingURL=homePage.css.map */

@@ -1,11 +1,18 @@
-import {Button, Col, DatePicker, Form, FormProps, InputNumber, message, Row, Typography} from "antd";
+import {Button, Col, Collapse, DatePicker, Form, FormProps, InputNumber, message, Row, Typography} from "antd";
 import {useEffect, useState} from "react";
-import dayjs from 'dayjs';
+import dayjs, {Dayjs} from 'dayjs';
 import "./homePage.scss"
+import {useQuery} from "@tanstack/react-query";
+import {fetchMonths, postMonthSplit} from "../api/months.ts";
+import {useAtomValue} from "jotai/react";
+import {tokenAtom} from "../atomStore.ts";
+import BudgetFlow from "../components/BudgetFlow.tsx";
+import {BudgetMonth} from "../model/dto/month.dto.ts";
 
 const {Title} = Typography;
 
-type FieldType = {
+export type MonthBudgetItem = {
+    date: Dayjs,
     incomeKaja: number;
     incomeAndy: number;
     wantsKaja: number;
@@ -18,6 +25,13 @@ const HomePage = () => {
     const [form] = Form.useForm();
     const [messageApi, contextHolder] = message.useMessage();
     const [date, setDate] = useState(dayjs());
+    const token = useAtomValue(tokenAtom)
+
+    const {data, refetch} = useQuery({
+        queryKey: ['fetchMonths'],
+        queryFn: () => fetchMonths(token)
+        },
+    )
 
     // Initial incomes
     const [income, setIncome] = useState({kaja: 0, andy: 0});
@@ -52,7 +66,7 @@ const HomePage = () => {
         });
     }, [income.andy, income.kaja, splits]);
 
-    const handleSubmit: FormProps<FieldType>['onFinish'] = (values) => {
+    const handleSubmit: FormProps<MonthBudgetItem>['onFinish'] = (values) => {
         // Check split
         if (splits.needs + splits.wants + splits.funSavings + splits.noFunSavings !== 100) {
             messageApi.open({
@@ -63,20 +77,54 @@ const HomePage = () => {
             return;
         }
 
-        console.log(values)
+        postMonthSplit(token, {
+            date: date.format('YYYY-MM-DD'),
+            data: {
+                incomeKaja: values.incomeKaja,
+                incomeAndy: values.incomeAndy,
+                wantsKaja: values.wantsKaja,
+                wantsAndy: values.wantsAndy,
+                funSavings: values.funSavings,
+                noFunSavings: values.noFunSavings,
+            }
+        }).then(() => {
+            messageApi.open({
+                type: 'success',
+                content: 'Úspěšně uloženo.',
+                duration: 5,
+            });
+            refetch()
+        }).catch((error) => {
+            console.error(error);
+            messageApi.open({
+                type: 'error',
+                content: 'Chyba při ukládání.',
+                duration: 5,
+            });
+        })
     }
 
     return (
         <div className={"homepage"}>
             {contextHolder}
-            <Form form={form} layout="vertical" onFinish={handleSubmit} initialValues={{date: date}}>
+            <Form form={form} layout="vertical" onFinish={handleSubmit} initialValues={{}}>
                 <Title level={3}>Budget Split</Title>
 
                 <Row gutter={16}>
                     <Col span={8} style={{marginTop: 4}}><b>Month</b></Col>
                     <Col span={8}>
                         <Form.Item name="date">
-                            <DatePicker picker="month" value={date} onChange={(date) => setDate(date)} />
+                            <DatePicker 
+                                picker="month" 
+                                value={date} 
+                                onChange={(date) => setDate(date)}
+                                disabledDate={(current) => {
+                                    if (!current || !data) return false;
+                                    return data.some(month => 
+                                        dayjs(month.date).format('YYYY-MM') === current.format('YYYY-MM')
+                                    );
+                                }}
+                            />
                         </Form.Item>
                     </Col>
                 </Row>
@@ -121,7 +169,7 @@ const HomePage = () => {
                             />
                         </Form.Item>
                     </Col>
-                    <Col span={24} style={{textAlign: 'right', marginTop: '-24px'}}>
+                    <Col span={24} style={{textAlign: 'right', marginTop: '-22px'}}>
                         <span>Split %:</span>
                         <InputNumber
                             min={0}
@@ -152,7 +200,7 @@ const HomePage = () => {
                             />
                         </Form.Item>
                     </Col>
-                    <Col span={24} style={{textAlign: 'right', marginTop: '-24px'}}>
+                    <Col span={24} style={{textAlign: 'right', marginTop: '-22px'}}>
                         <span>Split %:</span>
                         <InputNumber
                             min={0}
@@ -175,7 +223,7 @@ const HomePage = () => {
                             />
                         </Form.Item>
                     </Col>
-                    <Col span={24} style={{textAlign: 'right', marginTop: '-24px'}}>
+                    <Col span={24} style={{textAlign: 'right', marginTop: '-22px'}}>
                         <span>Split %:</span>
                         <InputNumber
                             min={0}
@@ -198,7 +246,7 @@ const HomePage = () => {
                             />
                         </Form.Item>
                     </Col>
-                    <Col span={24} style={{textAlign: 'right', marginTop: '-24px'}}>
+                    <Col span={24} style={{textAlign: 'right', marginTop: '-22px'}}>
                         <span>Split %:</span>
                         <InputNumber
                             min={0}
@@ -219,6 +267,17 @@ const HomePage = () => {
                     </Form.Item>
                 </Col>
             </Form>
+            <div className="budget-flow-container">
+                <Title level={4}>Budget Flow</Title>
+                <Collapse defaultActiveKey={data?.[0]?.id}>
+                    {data?.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                        .map((month: BudgetMonth) => (
+                        <Collapse.Panel key={month.id} header={dayjs(month.date).format('MMMM YYYY')}>
+                            <BudgetFlow budget={month.data} />
+                        </Collapse.Panel>
+                    ))}
+                </Collapse>
+            </div>
         </div>
     );
 }
